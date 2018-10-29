@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Diagnostics.CodeAnalysis;
 
 namespace extended.Iteration
@@ -7,24 +8,38 @@ namespace extended.Iteration
     [SuppressMessage("ReSharper", "RedundantOverriddenMember")]
     public class TreeNode
     {
-        // TODO: You can add some field here if you want
-        // <-start
-        // --end->
+        public TreeNode Parent { get; set; }
+        public TreeNode[] Child { get; set; }
+        public string Name { get; set; }
         
         public TreeNode(string rootNode, params TreeNode[] children)
         {
-            // TODO: Please implement the method
-            // <-start
-            throw new NotImplementedException();
-            // --end->
+            if (rootNode == null || rootNode == "")
+            {
+                throw new ArgumentException("Empty Tree");
+            }
+
+            this.Name = rootNode;
+            
+            foreach(TreeNode c in children)
+            {
+                c.Parent = this;
+            }
+
+            this.Child = children;
         }
 
         public override string ToString()
         {
-            // TODO: Please convert tree to string
-            // <-start
-            return base.ToString();
-            // --end->
+
+            StringBuilder childrenName = new StringBuilder();
+
+            foreach(TreeNode c in Child)
+            {
+                childrenName.Append("  " + c.ToString() );
+            }
+
+            return this.Name + "\n" + childrenName;
         }
     }
 }

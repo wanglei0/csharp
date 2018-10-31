@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace extended.Iteration
 {
@@ -11,6 +12,10 @@ namespace extended.Iteration
         public TreeNode Parent { get; set; }
         public TreeNode[] Child { get; set; }
         public string Name { get; set; }
+        public int Layer { get; set; }
+
+
+        public StringBuilder NameToString = new StringBuilder();
         
         public TreeNode(string rootNode, params TreeNode[] children)
         {
@@ -27,19 +32,35 @@ namespace extended.Iteration
             }
 
             this.Child = children;
+
+        }
+
+        public void GetLayer()
+        {
+            if (this.Parent == null)
+            {
+                this.Layer = 0;
+            }
+
+            foreach (TreeNode child in this.Child)
+            {
+                child.Layer = this.Layer + 2;
+                child.GetLayer();
+            }
         }
 
         public override string ToString()
         {
+            GetLayer();
 
             StringBuilder childrenName = new StringBuilder();
 
-            foreach(TreeNode c in Child)
+            foreach (TreeNode childNode in Child)
             {
-                childrenName.Append("  " + c.ToString() );
+                childrenName.Append( childNode.ToString());
             }
 
-            return this.Name + "\n" + childrenName;
+            return new StringBuilder().Append(' ', Layer) + Name + "\n" + childrenName;
         }
     }
 }

@@ -9,58 +9,46 @@ namespace extended.Iteration
     [SuppressMessage("ReSharper", "RedundantOverriddenMember")]
     public class TreeNode
     {
-        public TreeNode Parent { get; set; }
-        public TreeNode[] Child { get; set; }
-        public string Name { get; set; }
-        public int Layer { get; set; }
+        readonly TreeNode[] children;
+        readonly string name;
 
-
-        public StringBuilder NameToString = new StringBuilder();
-        
-        public TreeNode(string rootNode, params TreeNode[] children)
+        public TreeNode(string name, params TreeNode[] children)
         {
-            if (rootNode == null || rootNode == "")
+            if (name == null || name == "")
             {
                 throw new ArgumentException("Empty Tree");
             }
 
-            this.Name = rootNode;
-            
-            foreach(TreeNode c in children)
-            {
-                c.Parent = this;
-            }
-
-            this.Child = children;
-
-        }
-
-        public void GetLayer()
-        {
-            if (this.Parent == null)
-            {
-                this.Layer = 0;
-            }
-
-            foreach (TreeNode child in this.Child)
-            {
-                child.Layer = this.Layer + 2;
-                child.GetLayer();
-            }
+            this.name = name;
+            this.children = children ?? Array.Empty<TreeNode>();
         }
 
         public override string ToString()
         {
-            GetLayer();
+            return ToStringForLayer(0, this);
+        }
 
-            StringBuilder childrenName = new StringBuilder();
+        string ToStringForLayer(int layer, TreeNode node)
+        {
+            var finalResult = new StringBuilder();
 
-            foreach (TreeNode childNode in Child)
+            finalResult.Append(ToStringForSingleLayer(layer, node));
+
+            foreach (TreeNode child in node.children)
             {
-                childrenName.Append( childNode.ToString());
+                finalResult.Append(ToStringForLayer(layer + 1, child));
             }
 
-            return new StringBuilder().Append(' ', Layer) + Name + "\n" + childrenName;
+            return finalResult.ToString();
+        }
+
+        static string ToStringForSingleLayer(int layer, TreeNode node)
+        {
+            return new StringBuilder()
+                .Append(' ', layer * 2)
+                .Append(node.name)
+                .Append('\n')
+                .ToString();
         }
     }
 }

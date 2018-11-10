@@ -39,6 +39,8 @@ namespace extended.Iteration
                 new TreeNode("Child-Middle",
                     new TreeNode("Grand-Child")),
                 new TreeNode("Child-Right"));
+
+            tree.ToString();
             
             Assert.Equal(
                 "Root Node\n" +
